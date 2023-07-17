@@ -1,0 +1,20 @@
+doctype html
+html(lang="en")
+  head
+    title #{name}'s Todo List
+    
+    meta(charset="UTF-8")
+    meta(name="viewport",content="width=device-width, initial-scale=1.0") 
+    meta(name="a simple todo app")
+
+    style 
+      include ../public/styles.css
+    
+    script(src="https://unpkg.com/htmx.org@1.9.3",integrity="sha384-lVb3Rd/Ca0AxaoZg5sACe8FJKF0tnUgR2Kd7ehUOG5GCcROv5uBIZsOqovBAcWua",crossorigin="anonymous")
+
+  body
+    div(hx-get="/todos",hx-trigger="load",hx-target="#todos")
+      h1.text-3xl.font-bold todos go here
+    div(id="todos") loading...
+  </body>
+</html>
