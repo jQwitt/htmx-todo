@@ -1,6 +1,21 @@
 import express from "express";
 import path from "path";
 
+const todoList = [
+  {
+    title: "Groceries",
+    dueDate: "Today",
+  },
+  {
+    title: "Clean Car",
+    dueDate: "Yesterday",
+  },
+  {
+    title: "Submit Taxes",
+    dueDate: "08/27/2001",
+  },
+];
+
 const app = express();
 
 app.set("view engine", "pug");
@@ -13,7 +28,7 @@ app.get("/", function (req, res) {
 });
 
 app.get("/todos", function (req, res) {
-  res.render("components/_todo");
+  res.render("components/_todo-list", { list: todoList });
 });
 
 app.listen(3000, () => {
