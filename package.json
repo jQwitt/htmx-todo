@@ -7,7 +7,7 @@
         "test": "echo \"Error: no test specified\" && exit 1",
         "clean": "rimraf dist/",
         "copy": "copyfiles src/public/*.css -u 1 dist && copyfiles src/views/**/*.pug src/views/*.pug -u 1 dist",
-        "build": "pnpm eslint . && pnpm clean && pnpm copy && tsc -w",
+        "build": "pnpm lint && pnpm clean && pnpm copy && tsc",
         "start": "node dist/app.js",
         "dev": "nodemon -w",
         "tw:build": "postcss src/styles/tailwind.css -o src/public/styles.css",
