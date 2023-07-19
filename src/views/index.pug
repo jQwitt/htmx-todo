@@ -13,12 +13,16 @@ html.bg-slate-200(lang="en")
     script(src="https://unpkg.com/htmx.org@1.9.3",integrity="sha384-lVb3Rd/Ca0AxaoZg5sACe8FJKF0tnUgR2Kd7ehUOG5GCcROv5uBIZsOqovBAcWua",crossorigin="anonymous")
 
   body.min-h-screen.flex.flex-col.justify-between
+
+    include ./mixins/_button
+
     section.m-4
       div(hx-get="/todos",hx-trigger="load",hx-target="#todo-list")
         h1.text-4xl.font-bold #{name}'s Todo List
-      div controls
-        button(hx-get="/todos",hx-target="#todo-list",class="bg-slate-300 hover:bg-slate-600 text-slate-900 font-semibold hover:text-white py-2 px-4 border border-slate-900 hover:border-transparent rounded") Refresh
+      div.pt-4.flex.gap-2 
+        +button("Refresh")
+        +button("+")
       div(id="todo-list") loading...
-    footer.p-5.text-center.bg-slate-300 A code jam by Jack Witt
+    footer.p-5.text-center.bg-slate-300 A code jam by Jack Witt, 2023
   </body>
 </html>
