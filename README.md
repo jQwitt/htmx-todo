@@ -22,3 +22,7 @@ Compiles the project and runs the output from `/dist`.
 ```bash
 pnpm build && pnpm start
 ```
+
+### Resources
+
+[HeroIcons](https://heroicons.com/)
