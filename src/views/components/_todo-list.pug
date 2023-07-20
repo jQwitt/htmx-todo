@@ -1,4 +1,4 @@
 div 
   include ../mixins/_todo 
   each todo in list 
-    +todo(todo['id'], todo['title'], todo['dueDate'])
+    +todo(todo['id'], todo['title'], todo['dueDate'], todo['completed'])
