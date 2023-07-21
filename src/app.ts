@@ -1,9 +1,9 @@
 import express from 'express'
-import * as bodyParser from 'body-parser'
-import path from 'path'
+
 import 'dotenv/config'
 
 import { v4 as uuidv4 } from 'uuid'
+import { middleware } from './server/middleware'
 
 // eslint-disable-next-line
 const todoList: any[] = [
@@ -16,12 +16,7 @@ const todoList: any[] = [
 ]
 
 const app = express()
-
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true }))
-
-app.set('view engine', 'pug')
-app.set('views', path.join(__dirname, 'views'))
+middleware(app)
 
 if (process.env.ENABLE_DEVELOPMENT_LOGGING === 'true') {
     app.use((req, res, next) => {
