@@ -1,29 +1,22 @@
 import express from 'express'
-
 import 'dotenv/config'
 
-import { v4 as uuidv4 } from 'uuid'
-import { middleware } from './server/middleware'
+import { PrismaClient } from '@prisma/client'
 
-// eslint-disable-next-line
-const todoList: any[] = [
-    {
-        id: uuidv4(),
-        title: 'Get gas',
-        dueDate: 'Today',
-        completed: false,
-    },
-]
+import { middleware } from './server/middleware'
+import log from './utils/logger'
 
 const app = express()
 middleware(app)
 
 if (process.env.ENABLE_DEVELOPMENT_LOGGING === 'true') {
     app.use((req, res, next) => {
-        req.on('end', () => console.log(todoList))
+        log.requestInfo(req.method, req.path)
         next()
     })
 }
+
+const prisma = new PrismaClient()
 
 app.get('/', function (req, res) {
     res.render('index', {
@@ -31,55 +24,80 @@ app.get('/', function (req, res) {
     })
 })
 
-app.get('/todos', function (req, res) {
+app.get('/todos', async function (req, res) {
+    const todos = await prisma.todo.findMany({
+        where: {
+            completed: false,
+        },
+    })
     res.render('components/_todo-list', {
-        list: todoList.filter((todo) => !todo.completed),
+        list: todos,
     })
 })
 
-app.post('/todos', function (req, res) {
+app.post('/todos', async function (req, res) {
     const { title, dueDate } = req.body
     if (title && dueDate) {
-        const newTodo = { id: uuidv4(), title, dueDate, completed: false }
-        todoList.push(newTodo)
-        res.render('wrappers/_todo-wrapper', newTodo)
+        const todo = await prisma.todo.create({
+            data: {
+                title,
+                dueDate,
+                completed: false,
+            },
+        })
+        res.render('wrappers/_todo-wrapper', todo)
     }
     res.send()
 })
 
-app.get('/todos/completed', function (req, res) {
+app.get('/todos/completed', async function (req, res) {
+    const todos = await prisma.todo.findMany({
+        where: {
+            completed: true,
+        },
+    })
     res.render('components/_todo-list', {
-        list: todoList.filter((todo) => todo.completed),
+        list: todos,
     })
 })
 
-app.post('/todos/:id/toggle', function ({ params }, res) {
+app.post('/todos/:id/complete', async function ({ params }, res) {
     const { id } = params
-    const todo = todoList.find((todo) => todo.id === id)
+    const todo = await prisma.todo.update({
+        where: {
+            id: Number(id),
+        },
+        data: {
+            completed: true,
+        },
+    })
     if (todo) {
-        todo.completed = !todo.completed
+        res.render('wrappers/_todo-wrapper', todo)
     }
-    res.render('wrappers/_todo-wrapper', { ...todo })
+    res.send()
 })
 
-app.put('/todos/:id', function ({ params, body }, res) {
+app.delete('/todos/:id', async function ({ params }, res) {
     const { id } = params
-    const todo = todoList.find((todo) => todo.id === id)
-    if (todo) {
-        todoList[todoList.indexOf(todo)] = Object.assign(todo, body)
-    }
-    res.render('wrappers/_todo-wrapper', { ...todo, title: 'server' })
+    await prisma.todo.delete({
+        where: {
+            id: Number(id),
+        },
+    })
+    res.send(null)
 })
 
-app.delete('/todos/:id', function ({ params }, res) {
-    const { id } = params
-    const todo = todoList.find((todo) => todo.id === id)
-    if (todo) {
-        todoList.splice(todoList.indexOf(todo), 1)
-    }
-    res.render('wrappers/_todo-wrapper', { id: '-1' })
-})
+const run = async () =>
+    app.listen(3000, () => {
+        console.log('server is running!')
+    })
 
-app.listen(3000, () => {
-    console.log('server is running!')
-})
+run()
+    .then(async () => {
+        await prisma.$disconnect()
+    })
+    .catch(async (e) => {
+        console.error(e)
+        await prisma.$disconnect()
+        process.exit(1)
+    })
