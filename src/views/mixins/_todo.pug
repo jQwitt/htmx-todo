@@ -2,12 +2,16 @@ mixin todo(id, title, dueDate, completed)
   include ./_icon
   unless id === '-1'
     div.group.relative.flex.flex-row.justify-start.items-center.my-2.border.border-slate-500.rounded.p-2.bg-slate-100(id=`todo-${id}` class=`min-h-[70] ${completed ? "line-through bg-slate-200" : ""}`)
-      div
-        div.flex.flex-row.items-center
+      div.flex.flex-row.items-center
+        div
           p.text-xl.font-bold #{title}
-          if !completed
-            button.mx-2.p-1.rounded-full.opacity-0(class="min-h-[70] hover:bg-emerald-500 hover:text-slate-100 group-hover:opacity-100 ease-in-out duration-200" hx-post=`/todos/${id}/toggle` hx-target=`div#todo-${id}` hx-swap="outerHTML")
-              +icon('check')
-        p.text-sml.text-slate-800 Due #{dueDate}
-      button.absolute.right-1.top-1.rounded-full.opacity-0(class="min-h-[70] hover:bg-red-700 hover:text-slate-100 group-hover:opacity-100 ease-in-out duration-200" hx-delete=`/todos/${id}` hx-target=`div#todo-${id}` hx-swap="outerHTML")
-        +icon('delete')
+        
+          p.text-sml.text-slate-800 Due #{dueDate}
+        if !completed
+          button.mx-2.p-1.rounded-full.opacity-0(class="min-h-[70] hover:bg-emerald-500 hover:text-slate-100 group-hover:opacity-100 ease-in-out duration-200" hx-post=`/todos/${id}/toggle` hx-target=`div#todo-${id}` hx-swap="outerHTML")
+            +icon('check', 'large')
+      div.flex.flex-row.gap-1.absolute.right-1.top-1
+        button.rounded-full.opacity-0(class="min-h-[70] hover:bg-slate-700 hover:text-slate-100 group-hover:opacity-100 ease-in-out duration-200" hx-put=`/todos/${id}` hx-target=`div#todo-${id}` hx-swap="outerHTML")
+          +icon('edit')
+        button.rounded.opacity-0(class="min-h-[70] hover:bg-red-700 hover:text-slate-100 group-hover:opacity-100 ease-in-out duration-200" hx-delete=`/todos/${id}` hx-target=`div#todo-${id}` hx-swap="outerHTML")
+          +icon('delete')

@@ -1,29 +1,24 @@
 import express from 'express'
+import * as bodyParser from 'body-parser'
 import path from 'path'
 import 'dotenv/config'
 
-const todoList = [
+import { v4 as uuidv4 } from 'uuid'
+
+// eslint-disable-next-line
+const todoList: any[] = [
     {
-        id: '1',
-        title: 'Groceries',
+        id: uuidv4(),
+        title: 'Get gas',
         dueDate: 'Today',
-        completed: false,
-    },
-    {
-        id: '2',
-        title: 'Clean Car',
-        dueDate: 'Yesterday',
-        completed: false,
-    },
-    {
-        id: '3',
-        title: 'Submit Taxes',
-        dueDate: '08/27/2001',
         completed: false,
     },
 ]
 
 const app = express()
+
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
 
 app.set('view engine', 'pug')
 app.set('views', path.join(__dirname, 'views'))
@@ -47,6 +42,16 @@ app.get('/todos', function (req, res) {
     })
 })
 
+app.post('/todos', function (req, res) {
+    const { title, dueDate } = req.body
+    if (title && dueDate) {
+        const newTodo = { id: uuidv4(), title, dueDate, completed: false }
+        todoList.push(newTodo)
+        res.render('wrappers/_todo-wrapper', newTodo)
+    }
+    res.send()
+})
+
 app.get('/todos/completed', function (req, res) {
     res.render('components/_todo-list', {
         list: todoList.filter((todo) => todo.completed),
@@ -60,6 +65,15 @@ app.post('/todos/:id/toggle', function ({ params }, res) {
         todo.completed = !todo.completed
     }
     res.render('wrappers/_todo-wrapper', { ...todo })
+})
+
+app.put('/todos/:id', function ({ params, body }, res) {
+    const { id } = params
+    const todo = todoList.find((todo) => todo.id === id)
+    if (todo) {
+        todoList[todoList.indexOf(todo)] = Object.assign(todo, body)
+    }
+    res.render('wrappers/_todo-wrapper', { ...todo, title: 'server' })
 })
 
 app.delete('/todos/:id', function ({ params }, res) {
