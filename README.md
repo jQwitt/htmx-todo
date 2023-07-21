@@ -1,9 +1,8 @@
 # htmx-todo
 
-![Screen Shot 2023-07-21 at 1 43 47 PM](https://github.com/jQwitt/htmx-todo/assets/10406506/504b68be-2e93-452a-9f50-fc18de224c4b)
+![demo](./docs/imgs/demo.png)
 
-
-Simple TODO web app using typescript, express, prisma, pug, htmx and tailwind. 
+Simple TODO web app using typescript, express, prisma, pug, htmx and tailwind.
 
 ### Run the App locally
 
@@ -28,10 +27,9 @@ pnpm build && pnpm start
 
 ### Lighthouse and Performance
 
-This is cheating since the app is so small but even for side projects the goal is to meet all WCAG and performance standards. 
+This is cheating since the app is so small but even for side projects the goal is to meet all WCAG and performance standards.
 
-![Screen Shot 2023-07-21 at 2 04 02 PM](https://github.com/jQwitt/htmx-todo/assets/10406506/eafad708-f16e-4a84-a1f2-be3d575ca738)
-
+![demo](./docs/imgs/perf.png)
 
 ### Resources
 
